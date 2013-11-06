@@ -1,15 +1,18 @@
 <?php
 
+// Github user or organization.
+define('VINTAGE_USER', 'jhedstrom');
+
+// Root.
+define('VINTAGE_ROOT', getcwd());
+
+// Data directory.
+define('VINTAGE_DATA_DIRECTORY', __DIR__ . '/data');
+
 require_once 'vendor/autoload.php';
 
 $client = new Github\Client();
-$repositories = $client->api('user')->repositories('jhedstrom');
-
-// Root.
-define('ROOT', getcwd());
-
-// Data directory.
-define('DATA_DIRECTORY', __DIR__ . '/data');
+$repositories = $client->api('user')->repositories(VINTAGE_USER);
 
 use Symfony\Component\Finder\Finder;
 
@@ -18,10 +21,10 @@ foreach ($repositories as $repo) {
 
   $name = $repo['name'];
   $clone_url = $repo['clone_url'];
-  $directory = DATA_DIRECTORY . '/' . $name;
+  $directory = VINTAGE_DATA_DIRECTORY . '/' . $name;
 
   if (!file_exists($directory)) {
-    chdir(DATA_DIRECTORY);
+    chdir(VINTAGE_DATA_DIRECTORY);
     `git clone $clone_url`;
   }
   else {
@@ -34,7 +37,7 @@ foreach ($repositories as $repo) {
   }
 
   // Go back.
-  chdir(ROOT);
+  chdir(VINTAGE_ROOT);
 }
 
 var_dump($make_files);
